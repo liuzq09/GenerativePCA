@@ -66,7 +66,7 @@ python celebA_main_phaseretrieval.py --num-input-images 8 --num-outer-measuremen
 
 ## References
 
-Large parts of the code are derived from [Bora et al.](https://github.com/AshishBora/csgm), [ Shah et al.](https://github.com/shahviraj/pgdgan), and [Liu et al.](https://github.com/selwyn96/Quant_CS).
+Large parts of the code are derived from [Bora et al.](https://github.com/AshishBora/csgm), [ Shah et al.](https://github.com/shahviraj/pgdgan), and [Liu et al.](https://github.com/selwyn96/Quant_CS)
 
 
 
