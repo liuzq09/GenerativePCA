@@ -1,0 +1,6 @@
+model_checkpoint_path: "mnist_vae_model-99"
+all_model_checkpoint_paths: "mnist_vae_model-80"
+all_model_checkpoint_paths: "mnist_vae_model-85"
+all_model_checkpoint_paths: "mnist_vae_model-90"
+all_model_checkpoint_paths: "mnist_vae_model-95"
+all_model_checkpoint_paths: "mnist_vae_model-99"
