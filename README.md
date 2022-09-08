@@ -37,8 +37,8 @@ python mnist_main_phaseretrieval.py --num-outer-measurement-ls 50 100 200 400 80
 
 
 
-Run PPower (and TPower, Power) on the Fashion-MNIST dataset for the spiked covariance model,
-
+Run PPower (and TPower, Power) on the Fashion-MNIST dataset for the spiked covariance model: Note that the pre-trained VAE model for Fashion-MNIST is too large (160Mb) to be directly uploaded into GitHub. Please download it from https://drive.google.com/file/d/1tXIRAbdtDrip_8Wu0-LbTvr2aGHSjx9R/view?usp=sharing and copy it into the folder GenerativePCA/src/VAE_fashion-mnist_128_62/VAE
+ 
 python fashion_main_spikedcov.py --num-outer-measurement-ls 50 100 200 300 400 500 --beta-ls 1 --num-experiments 10 --method-ls Power TPower PPower
 
 python fashion_main_spikedcov.py --num-outer-measurement-ls 300 --beta-ls 0.6 0.7 0.8 0.9 1 2 3 4 --num-experiments 10 --method-ls Power TPower PPower
