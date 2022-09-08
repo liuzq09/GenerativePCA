@@ -48,7 +48,7 @@ def main(hparams):
                 
                 A_outer = utils.get_outer_A(hparams) # Created the random matric A
             #    noise_batch = hparams.noise_std * np.random.randn(hparams.batch_size, 100)
-                y_batch_outer =np.abs(np.matmul(x_batch, A_outer)) # Multiplication of A and X followed by quantization on 4 levels  /LA.norm(x_batch, axis=(1),keepdims=True)
+                y_batch_outer =np.abs(np.matmul(x_batch/LA.norm(x_batch, axis=(1),keepdims=True), A_outer)) # Multiplication of A and X followed by quantization on 4 levels  /LA.norm(x_batch, axis=(1),keepdims=True)
                 lwb = 1.0
                 upb = 5.0
                 lamb = y_batch_outer.mean(axis=1, keepdims=False)*np.sqrt(np.pi/2.0)
@@ -114,9 +114,11 @@ def main(hparams):
                                 # x_est_batch = x_batch
                         if hparams.method == 'PPower':
                             estimator = estimators['dcgan']
-                            x_est_batch=x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)*LA.norm(x_batch, axis=(1),keepdims=True)
+                            x_est_batch=x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)*LA.norm(x_batch, axis=(1),keepdims=True) # Such a normalization step is not required in theoretical analysis, but it is helpful to improve the numerical performance. 
+                            # We believe that this normalization step can be removed if we pre-train the model using normalized image vectors, or modify the numerical projection approach accordingly.
                             print('x_batch inner',x_batch.shape,x_batch.min(),x_batch.max())
-                            x_hat_batch = (estimator(x_est_batch*2.0-1.0,z_opt_batch, hparams)+1.0)/2.0 #z_opt_batch
+                            x_est_batch = (estimator(x_est_batch*2.0-1.0,z_opt_batch, hparams)+1.0)/2.0 #z_opt_batch
+                            x_hat_batch = x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)
                             
                         elif hparams.method == 'Power':
                             x_hat_batch = x_est_batch

@@ -138,7 +138,7 @@ def dcgan_estimator(hparams):
     y_batch = tf.placeholder(tf.float32, shape=(hparams.batch_size, hparams.n_input), name='y_batch')
 #
     # Create the generator
-    z_batch = tf.Variable(tf.random.normal([hparams.batch_size, 100]), name='z_batch')
+    z_batch = tf.Variable(tf.random_normal([hparams.batch_size, 100]), name='z_batch')
     x_hat_batch, restore_dict_gen, restore_path_gen = celebA_model_def.dcgan_gen(z_batch, hparams)
 
     # Create the discriminator
@@ -155,8 +155,8 @@ def dcgan_estimator(hparams):
     m_loss1_batch =  tf.reduce_mean(tf.abs(y_batch - y_hat_batch), 1)
     m_loss2_batch =  tf.reduce_mean((y_batch - y_hat_batch)**2, 1)
     zp_loss_batch =  tf.reduce_sum(z_batch**2, 1)
-    d_loss1_batch = -tf.math.log(prob)
-    d_loss2_batch =  tf.math.log(1-prob)
+    d_loss1_batch = -tf.log(prob)
+    d_loss2_batch =  tf.log(1-prob)
 
     # define total loss
     total_loss_batch = hparams.mloss1_weight * m_loss1_batch \

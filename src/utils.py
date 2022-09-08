@@ -362,7 +362,8 @@ def image_plot(imgdict, view_image, hparams, alg_labels=True,font_size=24):
     figure_height = len(imgdict)
 
     # fig = plt.figure(figsize=[2*len(images), 2*figure_height])
-    fig, axes = plt.subplots(nrows=figure_height, ncols=1, figsize=[2*len(imgdict['Original']), 2*figure_height])
+    fig, axes = plt.subplots(nrows=figure_height, ncols=len(imgdict['Original']), figsize=[2*len(imgdict['Original']), 2*figure_height])
+    fig.patch.set_alpha(0.0)
     outer_counter = 0
     inner_counter = 0
 
@@ -389,29 +390,31 @@ def image_plot(imgdict, view_image, hparams, alg_labels=True,font_size=24):
 
 
     for model_type in hparams.model_types:
-        
+        inner_c = 0
         for image in imgdict[model_type]:
 
             inner_counter += 1
             # ax = fig.add_subplot(figure_height, 1, outer_counter, frameon=False)
             # axes[outer_counter].plot()
-            axes[outer_counter].get_xaxis().set_visible(False)
-            axes[outer_counter].get_yaxis().set_ticks([])
-            axes[outer_counter].spines["top"].set_visible(False)
-            axes[outer_counter].spines["bottom"].set_visible(False)            
-            axes[outer_counter].spines["right"].set_visible(False)
-            axes[outer_counter].spines["left"].set_visible(False)
+            axes[outer_counter,inner_c].get_xaxis().set_visible(False)
+            axes[outer_counter,inner_c].get_yaxis().set_ticks([])
+            axes[outer_counter,inner_c].spines["top"].set_visible(False)
+            axes[outer_counter,inner_c].spines["bottom"].set_visible(False)            
+            axes[outer_counter,inner_c].spines["right"].set_visible(False)
+            axes[outer_counter,inner_c].spines["left"].set_visible(False)
 
-            if alg_labels:
+            if alg_labels and inner_c == 0:
                 # ax.set_ylabel(model_type, fontsize=14)
                 # ax.set_ylabel('GPCA',fontsize=12)
                 if model_type == 'OneShot-FP':
-                    axes[outer_counter].yaxis.set_label_text(model_type,fontsize=18)
+                    axes[outer_counter,inner_c].yaxis.set_label_text(model_type,fontsize=18)
                 else:
-                    axes[outer_counter].yaxis.set_label_text(model_type,fontsize=font_size)
+                    axes[outer_counter,inner_c].yaxis.set_label_text(model_type,fontsize=font_size)
             _ = fig.add_subplot(figure_height, len(imgdict['Original']), inner_counter)
+            # figsub.patch.set_alpha(0.0)
             view_image(image, hparams)
             # plt.tight_layout()
+            inner_c += 1
         outer_counter += 1
 
 
@@ -426,6 +429,8 @@ def image_plot(imgdict, view_image, hparams, alg_labels=True,font_size=24):
 def plot_image(image, cmap=None):
     """Show the image"""
     frame = plt.gca()
+    # fig = plt.gcf()
+    # fig.patch.set_alpha(0.0)
     frame.axes.get_xaxis().set_visible(False)
     frame.axes.get_yaxis().set_visible(False)
     frame = frame.imshow(image, cmap=cmap)

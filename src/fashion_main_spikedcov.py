@@ -27,12 +27,12 @@ def main(hparams):
         hparams.num_outer_measurements = n_measurement
         utils.setup_checkpointing(hparams)
         for beta in hparams.beta_ls:
-            for key, x in xs_dict.iteritems():
+            for key, x in xs_dict.items():
                 print(key)
                 x_batch_dict[key] = x #placing images in dictionary
                 if len(x_batch_dict) > hparams.batch_size:
                     break
-            x_coll = [x.reshape(1, hparams.n_input) for _, x in x_batch_dict.iteritems()] #Generates the columns of input x
+            x_coll = [x.reshape(1, hparams.n_input) for _, x in x_batch_dict.items()] #Generates the columns of input x
             x_batch = np.concatenate(x_coll) # Generates entire X
             for ri in range(hparams.num_experiments):
                 A_outer = utils.get_spikedcov_A(hparams) # Created the random matric A
@@ -59,8 +59,10 @@ def main(hparams):
                         x_est_batch = np.matmul(V_batch,x_main_batch.reshape((x_main_batch.shape[0],x_main_batch.shape[1],1))).reshape((x_main_batch.shape[0],x_main_batch.shape[1]))/LA.norm(x_main_batch, axis=(1),keepdims=True)
                         if hparams.method == 'PPower':
                             estimator = estimators['vae']
-                            x_est_batch=x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)*LA.norm(x_batch, axis=(1),keepdims=True)
-                            x_hat_batch, z_opt_batch = estimator(x_est_batch, z_opt_batch, hparams)
+                            x_est_batch=x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)*LA.norm(x_batch, axis=(1),keepdims=True) # Such a normalization step is not required in theoretical analysis, but it is helpful to improve the numerical performance. 
+                            # We believe that this normalization step can be removed if we pre-train the model using normalized image vectors, or modify the numerical projection approach accordingly.
+                            x_est_batch, z_opt_batch = estimator(x_est_batch, z_opt_batch, hparams)
+                            x_hat_batch = x_est_batch/LA.norm(x_est_batch, axis=(1),keepdims=True)
                         elif hparams.method == 'Power':
                             x_hat_batch = x_est_batch
                         elif hparams.method == 'TPower':
@@ -154,7 +156,7 @@ if __name__ == '__main__':
     PARSER = ArgumentParser()
 
     # Pretrained model
-    PARSER.add_argument('--pretrained-model-dir', type=str, default='./BEGAN_fashion-mnist_256_62/BEGAN/', help='Directory containing pretrained model')
+    PARSER.add_argument('--pretrained-model-dir', type=str, default='./VAE_fashion-mnist_128_62/VAE/', help='Directory containing pretrained model')
 
     # Input
     PARSER.add_argument('--dataset', type=str, default='fashion', help='Dataset to use')
