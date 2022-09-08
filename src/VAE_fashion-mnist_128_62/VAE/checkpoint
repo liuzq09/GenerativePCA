@@ -1,0 +1,6 @@
+model_checkpoint_path: "VAE.model-43681"
+all_model_checkpoint_paths: "VAE.model-41497"
+all_model_checkpoint_paths: "VAE.model-42043"
+all_model_checkpoint_paths: "VAE.model-42589"
+all_model_checkpoint_paths: "VAE.model-43135"
+all_model_checkpoint_paths: "VAE.model-43681"
