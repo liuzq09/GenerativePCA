@@ -49,15 +49,15 @@ def generator(hparams, z, scope_name='', reuse=False):
     batch_size = z.get_shape().as_list()[0]
     # Network Architecture is exactly same as in infoGAN (https://arxiv.org/abs/1606.03657)
     # Architecture : FC1024_BR-FC7x7x128_BR-(64)4dc2s_BR-(1)4dc2s_S
-    with tf.variable_scope("generator", reuse=reuse):
-        net = tf.nn.relu(bn(linear(z, 1024, scope='g_fc1'), is_training=False, scope='g_bn1'))
-        net = tf.nn.relu(bn(linear(net, 128 * 7 * 7, scope='g_fc2'), is_training=False, scope='g_bn2'))
+    with tf.variable_scope("decoder", reuse=reuse):
+        net = tf.nn.relu(bn(linear(z, 1024, scope='de_fc1'), is_training=False, scope='de_bn1'))
+        net = tf.nn.relu(bn(linear(net, 128 * 7 * 7, scope='de_fc2'), is_training=False, scope='de_bn2'))
         net = tf.reshape(net, [batch_size, 7, 7, 128])
         net = tf.nn.relu(
-            bn(deconv2d(net, [batch_size, 14, 14, 64], 4, 4, 2, 2, name='g_dc3'), is_training=False,
-                scope='g_bn3'))
+            bn(deconv2d(net, [batch_size, 14, 14, 64], 4, 4, 2, 2, name='de_dc3'), is_training=False,
+                scope='de_bn3'))
 
-        out = tf.nn.sigmoid(deconv2d(net, [batch_size, 28, 28, 1], 4, 4, 2, 2, name='g_dc4'))
+        out = tf.nn.sigmoid(deconv2d(net, [batch_size, 28, 28, 1], 4, 4, 2, 2, name='de_dc4'))
         out = tf.reshape(out, [batch_size, 784])
         return out
 
@@ -74,11 +74,11 @@ def get_z_var(hparams, batch_size):
 
 
 def gen_restore_vars():
-    restore_vars = ['generator/g_fc1/Matrix', 'generator/g_fc1/bias', 'generator/g_bn1/beta', 
-                'generator/g_bn1/gamma', 'generator/g_bn1/moving_mean', 'generator/g_bn1/moving_variance',
-                'generator/g_fc2/Matrix', 'generator/g_fc2/bias', 'generator/g_bn2/beta', 'generator/g_bn2/gamma', 
-                'generator/g_bn2/moving_mean', 'generator/g_bn2/moving_variance', 'generator/g_dc3/w', 'generator/g_dc3/biases',
-                'generator/g_bn3/beta', 'generator/g_bn3/gamma', 'generator/g_bn3/moving_mean', 
-                 'generator/g_bn3/moving_variance', 'generator/g_dc4/w', 'generator/g_dc4/biases'
+    restore_vars = ['decoder/de_fc1/Matrix', 'decoder/de_fc1/bias', 'decoder/de_bn1/beta', 
+                'decoder/de_bn1/gamma', 'decoder/de_bn1/moving_mean', 'decoder/de_bn1/moving_variance',
+                'decoder/de_fc2/Matrix', 'decoder/de_fc2/bias', 'decoder/de_bn2/beta', 'decoder/de_bn2/gamma', 
+                'decoder/de_bn2/moving_mean', 'decoder/de_bn2/moving_variance', 'decoder/de_dc3/w', 'decoder/de_dc3/biases',
+                'decoder/de_bn3/beta', 'decoder/de_bn3/gamma', 'decoder/de_bn3/moving_mean', 
+                 'decoder/de_bn3/moving_variance', 'decoder/de_dc4/w', 'decoder/de_dc4/biases'
                 ]
     return restore_vars
